@@ -1,6 +1,5 @@
 package org.educa.dao;
 
-import generated.Producto;
 import generated.Productos;
 import jakarta.xml.bind.JAXBException;
 import org.educa.entity.ProductoEntity;
@@ -12,6 +11,4 @@ public interface ProductoDao {
     List<ProductoEntity> readFile(File fileXml) throws JAXBException;
 
     Productos getProductos(File file) throws JAXBException;
-
-
 }

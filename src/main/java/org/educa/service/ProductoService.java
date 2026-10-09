@@ -3,8 +3,10 @@ package org.educa.service;
 import generated.Producto;
 import generated.Productos;
 import jakarta.xml.bind.JAXBException;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.educa.dao.ProductoDao;
 import org.educa.dao.ProductoDaoImpl;
 import org.educa.entity.ProductoEntity;
@@ -25,6 +27,11 @@ public class ProductoService {
 
     public final ProductoDao productoDao = new ProductoDaoImpl();
 
+    /**
+     * @param fileXml
+     * @return
+     * @throws JAXBException
+     */
     public List<ProductoEntity> readFile(String fileXml) throws JAXBException {
         List<ProductoEntity> lista = productoDao.readFile(new File(fileXml));
         for (ProductoEntity productoEntity : lista) {
@@ -46,11 +53,15 @@ public class ProductoService {
             // Beneficio
             BigDecimal beneficios = precioFinal.subtract(costes);
             productoEntity.setProfit(beneficios);
-
         }
         return lista;
     }
 
+    /**
+     * @param fileXml
+     * @return
+     * @throws JAXBException
+     */
     public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
         File file = new File(fileXml);
         Productos productos = productoDao.getProductos(file);
@@ -70,6 +81,7 @@ public class ProductoService {
             BigDecimal precioFinal = precio
                     .subtract(importeDescuento)
                     .setScale(2, RoundingMode.CEILING);
+
             // Costes
             BigDecimal costesAlmacenaje = producto.getCostes().getCostesAlmacenaje();
             BigDecimal costesEnvio = producto.getCostes().getCostesEnvio();
@@ -79,29 +91,31 @@ public class ProductoService {
             BigDecimal beneficio = precioFinal.subtract(costes);
             beneficioTotal = beneficioTotal.add(beneficio);
         }
+
         // Fecha par el nombre
         String nombreFichero = file.getName().replace(".xml", "");
         String fecha = nombreFichero.replace("inventario_", "");
 
         // Creas la entidad con los datos obtenodos
-        SummaryEntity summaryEntity = new SummaryEntity(fecha,
-                numeroProductos,
-                beneficioTotal,
-                file.getAbsolutePath(),
-                nombreFichero,
-                file.length()
-        );
+        SummaryEntity summaryEntity = new SummaryEntity(fecha, numeroProductos, beneficioTotal, file.getAbsolutePath(), nombreFichero, file.length() );
+
         // Creas la rura de la carpeta de objeto path y la creas
         Path directorio = Paths.get(path);
         Files.createDirectories(directorio);
+
         // Creas la ruta de el fichero de objeto path
         Path fichero = directorio.resolve("result_" + fecha + ".txt");
+
         // Creas el archivo
         Files.writeString(fichero, summaryEntity.toPrint());
-
     }
 
+    /**
+     * @param fileXml
+     * @return
+     * @throws JAXBException
+     */
     public void exportExcel(String path, String fileXml) throws JAXBException, IOException, ParseException {
-    // TODO: Implementar
+        // TODO: Implementar
     }
 }
