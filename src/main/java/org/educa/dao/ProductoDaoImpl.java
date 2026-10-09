@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductoDaoImpl implements ProductoDao{
+public class ProductoDaoImpl implements ProductoDao {
 
     public List<ProductoEntity> readFile(File fileXml) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(Productos.class);
